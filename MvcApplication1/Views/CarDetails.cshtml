@@ -1,0 +1,117 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@inherits Umbraco.Web.Mvc.UmbracoViewPage<MvcApplication1.Model.CarDetailsViewModel>
+
+@using ContentModels = Umbraco.Web.PublishedContentModels;
+@{
+	Layout = "Base.cshtml";
+}
+<link href="~/css/ImageSlider.css" rel="stylesheet" />
+<script src="~/Scripts/ImageSlider/ImageSlider.js"></script>
+<section class="cardetails">
+<div class="main-spec">
+    <h3 class="notranslate">@Model.ShortDescription</h3>
+    <p class="price">@string.Format("{0:C}", @Model.Price)</p>
+</div>
+
+<div class="container-fluid">
+    <div class="col-md-8">
+	    <ul id="slideshow">
+            @foreach (var imgId in Model.Photos){
+		        <li>
+                    <h3></h3>
+                    <span>@Umbraco.Media(imgId).Url</span>
+                    <p></p>
+                    <a href="#"><img src="@(System.Text.RegularExpressions.Regex.Replace(Umbraco.Media(imgId).Url, "\\.(.*?)$", "_thumb.$1"))" alt="@Umbraco.Media(imgId).Name"></a>
+		        </li>
+            }
+	    </ul>
+	    <div id="wrapper">
+		    <div id="fullsize">
+			    <div id="imgprev" class="imgnav" title="Previous Image"></div>
+			    <div id="imglink"></div>
+			    <div id="imgnext" class="imgnav" title="Next Image"></div>
+			    <div id="image"></div>
+			    <div id="information">
+			    </div>
+		    </div>
+		    <div id="thumbnails">
+			    <div id="slideleft" title="Slide Left"></div>
+			    <div id="slidearea">
+				    <div id="slider"></div>
+			    </div>
+			    <div id="slideright" title="Slide Right"></div>
+		    </div>
+	    </div>
+    </div>
+
+    <div class="col-md-4 specs-container">
+            <article>
+                <span class="spectitle">Year</span>
+                <div class="spec">@Model.Year</div>
+            </article>
+            <article>
+                <span class="spectitle">Price</span>
+                <div class="spec">@Model.Price</div>
+            </article>
+            <article>
+                <span class="spectitle">Engine</span>
+                <div class="spec">@Model.Engine</div>
+            </article>
+            <article>
+                <span class="spectitle">Body</span>
+                <div class="spec">@Model.Body</div>
+            </article>
+            <article>
+                <span class="spectitle">Odometer</span>
+                <div class="spec">@Model.Odometer</div>
+            </article>
+            <article>
+                <span class="spectitle">Ext colour</span>
+                <div class="spec">@Model.ExtColour</div>
+            </article>
+            <article>
+                <span class="spectitle">Interior</span>
+                <div class="spec">@Model.Interior</div>
+            </article>
+            <article>
+                <span class="spectitle">Transmission</span>
+                <div class="spec">@Model.Transmission</div>
+            </article>
+            <article>
+                <span class="spectitle">Fuel Saver</span>
+                <div class="spec">@Model.Fuelsaver</div>
+            </article>
+            <article>
+                <span class="spectitle">Description</span>
+                <div class="spec">@Html.Raw(Model.LongDescription)</div>
+            </article>
+    </div>
+</div>
+<div class="features-container">
+    <h3>Features</h3>
+    <ul>
+            @foreach (var feature in Model.FeaturesList){
+		        <li>@feature</li>
+            }
+    </ul>
+</div>
+
+</section>
+<script type="text/javascript">
+    $('slideshow').style.display = 'none';
+    $('wrapper').style.display = 'block';
+    var slideshow = new TINY.slideshow("slideshow");
+    window.onload = function () {
+        slideshow.auto = true;
+        slideshow.speed = 5;
+        slideshow.link = "linkhover";
+        slideshow.info = "information";
+        slideshow.thumbs = "slider";
+        slideshow.left = "slideleft";
+        slideshow.right = "slideright";
+        slideshow.scrollSpeed = 4;
+        slideshow.spacing = 5;
+        slideshow.active = "#fff";
+        slideshow.init("slideshow", "image", "imgprev", "imgnext", "imglink");
+    }
+</script>

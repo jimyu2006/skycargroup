@@ -1,0 +1,14 @@
+/**umb_name:RedText*/
+.RedText{color: red;}
+
+/**umb_name:Blue Text*/
+.blueText{color:#234189;}
+
+/**umb_name:Left align*/
+.LeftAlign{text-align: left;}
+
+/**umb_name:Right align*/
+.RightAlign{text-align: right;}
+
+/**umb_name:Image with space*/
+.ImageWithSpace{margin: 10px;}

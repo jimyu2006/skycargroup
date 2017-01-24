@@ -1,0 +1,37 @@
+.header-one{
+	size: 20px;
+}
+.header-two{
+	size: 18px;
+}
+
+img.left-align {
+    text-align: left;
+}
+
+img.right-align {
+    text-align: right;
+}
+
+h1, h2
+{
+    color:BLue; 
+    font-size:24px; 
+    font-family: sans-serif; 
+    margin-top:0;
+    margin-bottom:0;
+} 
+
+h3, p4
+{
+    color:Green; 
+    font-size:18px; 
+    font-family: sans-serif; 
+    margin-top:0;
+    margin-bottom:0;
+} 
+
+p
+{
+    color:Gray;
+}

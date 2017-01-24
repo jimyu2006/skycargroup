@@ -1,0 +1,19 @@
+﻿ {
+  	propertyEditors:
+  	[ 
+  		{
+  			alias: "Brand-Model",
+  			name: "Brand model cascading list",
+			group:"Rich Content",
+  			editor:
+  			{
+  				view: "~/App_Plugins/BrandModelDropDown/brandmodellist.html"
+ 			}
+ 		}
+ 	],
+ 	javascript:
+ 	[
+ 		"~/App_Plugins/BrandModelDropDown/brandmodellist.controller.js",
+ 		"~/App_Plugins/BrandModelDropDown/brandmodellist.resources.js"
+ 	]
+ }

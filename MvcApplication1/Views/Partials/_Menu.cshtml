@@ -1,0 +1,25 @@
+﻿@using Umbraco.Web.Mvc;
+@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+
+@{
+    var root = CurrentPage.Site().Children.Where("Visible"); 
+    var homepage = CurrentPage.AncestorOrSelf(1);
+}
+
+<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav navbar-right">
+    <li class="@(homepage.Name==CurrentPage.Name ? "active": null)">
+        <a href="@homepage.Url">@homepage.Name</a>
+    </li>
+    @foreach (var page in root)
+    {
+       <li class="@(page.Name==CurrentPage.Name ? "active": null)">
+            <a href="@page.Url">
+                <span class="glyphicon" aria-hidden="true"></span>
+                @page.Name
+            </a>
+        </li>
+    }
+    </ul>
+</div>
+

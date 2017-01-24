@@ -1,0 +1,16 @@
+[
+	{"ID" : "1", "BrandID" : "1", "Model" : "RAV4"},
+	{"ID" : "2", "BrandID" : "1", "Model" : "HIGHLANDER"},
+	{"ID" : "3", "BrandID" : "1", "Model" : "CORSA"},
+	{"ID" : "4", "BrandID" : "1", "Model" : "CAMERY"},
+	{"ID" : "5", "BrandID" : "1", "Model" : "LEXUS"},
+	{"ID" : "6", "BrandID" : "2", "Model" : "BLUE BIRD"},
+	{"ID" : "7", "BrandID" : "2", "Model" : "TEANA"},
+	{"ID" : "8", "BrandID" : "2", "Model" : "RAV4"},
+	{"ID" : "9", "BrandID" : "3", "Model" : "ODESSY"},
+	{"ID" : "10", "BrandID" : "3", "Model" : "CRV"},
+	{"ID" : "11", "BrandID" : "3", "Model" : "ACCORD"},
+	{"ID" : "12", "BrandID" : "4", "Model" : "PAJERO"},
+	{"ID" : "13", "BrandID" : "4", "Model" : "MIRAGE"},
+	{"ID" : "14", "BrandID" : "4", "Model" : "OUTLANDER"}
+]

@@ -1,0 +1,13 @@
+﻿<div ng-controller="brandModelController">
+    <div>Brands</div>
+    <select name="brandDropdownList"
+            ng-model="model.value.BrandName"
+            ng-change="update()"
+            ng-options="d.BrandName as d.BrandName for d in parentListItems" />
+
+    <div>Models</div>
+    <select name="modelDropdownList"
+            ng-model="model.value.ModelName"
+            ng-options="d.ModelName as d.ModelName for d in childListItems" />
+</div>
+

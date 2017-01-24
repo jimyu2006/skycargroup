@@ -1,0 +1,11 @@
+﻿[
+  {"Id": "1", "ABS Braking"},
+  {"Id": "2", "Air Bag(s)"},
+  {"Id": "3", "Air Conditioning"},
+  {"Id": "4", "Climate Control"},
+  {"Id": "5", "Electric Mirrors"},
+  {"Id": "6", "Electric Windows"},
+  {"Id": "7", "Power Steering"},
+  {"Id": "8", "Rear Wiper"},
+  {"Id": "9", "VINZ APPRAISED"}
+]

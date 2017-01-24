@@ -1,0 +1,41 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@using ContentModels = Umbraco.Web.PublishedContentModels;
+
+@{ 
+    var selection = CurrentPage.Children.Where("Visible");
+ }
+
+@* Ensure that the Current Page has children *@
+@if (selection.Any())
+{
+    var itemIndex=0;
+<div class="container">
+    <div class="row">
+        @foreach (var item in selection){
+        char[] splitChar = { ',' };
+        string[] ids = item.Photos.ToString().Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
+
+        string headPhotoId="";
+
+        if(ids.Length>0){
+            headPhotoId=ids[0];
+        }
+
+      <div class="col-md-4">
+          <div>
+              <img width="100%" src="@Umbraco.Media(headPhotoId).Url" />
+          </div>
+          <div><a href="~/umbraco/Surface/Car/Get/@item.Id"  class="CarTitle">@item.Name</a></div>
+          <div>@item.Price</div>
+          <div>@item.ShortDescription</div>
+          <div>@item.LongDescription</div>
+      </div>
+        itemIndex++;
+        if(itemIndex %3==0){
+        <div class="clearfix hidden-sm"></div>
+        }
+    }
+    </div>
+</div>
+
+}

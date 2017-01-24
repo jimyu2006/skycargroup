@@ -1,0 +1,45 @@
+﻿@model MvcApplication1.Model.ContactFormViewModel
+
+@using(Html.BeginUmbracoForm("Submit", "ContactUs")) {
+@Html.AntiForgeryToken()
+<div class="contactform">
+    <div class="form-field width50 mr2">
+        <label>
+            Name <span>*</span>
+            @Html.TextBoxFor(x => Model.Name, new { @class = "required" })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "error" })
+        </label>
+
+        <label>
+            Email Address <span>*</span>
+            @Html.TextBoxFor(x => Model.Email, new { @class = "required" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "error" })
+        </label>
+
+        <label>
+            Subject <span>*</span>
+            @Html.TextBoxFor(x => Model.Subject, new { @class = "required" })
+            @Html.ValidationMessageFor(m => m.Subject, "", new { @class = "error" })
+        </label>
+
+    </div>
+    <div class="form-field width50 position-relative">
+        <label>
+            Message <span>*</span>
+            @Html.TextAreaFor(x => Model.Message, new { @class = "required" })
+            @Html.ValidationMessageFor(m => m.Message, "", new { @class = "error" })
+        </label>
+
+        <div class="form-footer end-form">
+            <button type="submit" class="btn">Send</button>
+            <span>* All Fields are Mandatory</span>
+        </div>
+    </div>
+    <span>@TempData["InfoMessage"]</span>
+</div>
+}
+
+
+
+
+
