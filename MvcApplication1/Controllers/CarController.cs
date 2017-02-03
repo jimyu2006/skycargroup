@@ -1,4 +1,5 @@
-﻿using MvcApplication1.Model;
+﻿using MvcApplication1.Controllers;
+using MvcApplication1.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,9 @@ using System.Web.Mvc;
 using Umbraco.Core.Models;
 using Umbraco.Web.Models;
 using Umbraco.Web.Mvc;
+using MvcApplication1.Helper;
 
-namespace cms2.Controllers
+namespace MvcApplication1.Controllers
 {
     public class CarController : SurfaceController
     {
@@ -40,23 +42,20 @@ namespace cms2.Controllers
 
             var CarDetail = new CarDetailsViewModel(currentNode, CultureInfo.CurrentCulture)
             {
-                //Brand = CarBrands.First(b => b.BrandCode == BrandDetails.BrandName).BrandName,
-                //Model = CarModels.First(b => b.ModelCode == BrandDetails.ModelName).ModelName,
-                Brand = getPropertyValue(currentNode, "BrandName"),
-                Model = getPropertyValue(currentNode, "ModelName"),
-                Year = int.Parse(getPropertyValue(currentNode, "Year")),
-                Price = int.Parse(getPropertyValue(currentNode, "Price")),
-                ShortDescription = getPropertyValue(currentNode, "ShortDescription"),
-                LongDescription = getPropertyValue(currentNode, "LongDescription"),
-                Photos=currentNode.GetProperty("Photos").Value.ToString().Split(new char[]{','}),
-                Engine = getPropertyValue(currentNode, "Engine"),
-                Body = getPropertyValue(currentNode, "Body"),
-                Odometer = getPropertyValue(currentNode, "Odometer"),
-                ExtColour = getPropertyValue(currentNode, "ExtColour"),
-                Interior = getPropertyValue(currentNode, "Interior"),
-                Transmission = getPropertyValue(currentNode, "Transmission"),
-                Fuelsaver = getPropertyValue(currentNode, "Fuelsaver"),
-                FeaturesList = currentNode.GetProperty("FeaturesList").Value.ToString().Split(new char[] { ',' })
+                Brand = currentNode.GetPropertyValue("BrandName"),
+                Model = currentNode.GetPropertyValue("ModelName"),
+                Year = int.Parse(currentNode.GetPropertyValue("Year")),
+                Price = int.Parse(currentNode.GetPropertyValue("Price")),
+                ShortDescription = currentNode.GetPropertyValue("LongDescription"),
+                Photos = currentNode.GetPropertyValue("Photos").Split(new char[] { ',' }),
+                Engine = currentNode.GetPropertyValue("Engine"),
+                Body = currentNode.GetPropertyValue("Body"),
+                Odometer = currentNode.GetPropertyValue("Odometer"),
+                ExtColour = currentNode.GetPropertyValue("ExtColour"),
+                Interior = currentNode.GetPropertyValue("Interior"),
+                Transmission = currentNode.GetPropertyValue("Transmission"),
+                Fuelsaver = currentNode.GetPropertyValue("Fuelsaver"),
+                FeaturesList = currentNode.GetPropertyValue("FeaturesList").Split(new char[] { ',' })
             };
             //return View("CarDetails", currentNode);
             return View("~/Views/CarDetails.cshtml", CarDetail);
@@ -71,28 +70,95 @@ namespace cms2.Controllers
         }
 
         //[ChildActionOnly]
-        ////public ActionResult RenderCarDetails(IPublishedContent model)
-        //public ActionResult RenderCarDetails(RenderModel model)
-        //{
-        //    var currentNode = Umbraco.TypedContent(model.Content.Id);
+        //public ActionResult RenderCarDetails(IPublishedContent model)
+        [ActionName("RenderCarDetails")]
+        public ActionResult RenderCarDetails(RenderModel model, int Id)
+        {
+            var currentNode = Umbraco.TypedContent(model.Content.Id);
+
+            var CarDetail = new CarDetailsViewModel(currentNode, CultureInfo.CurrentCulture)
+            {
+
+            };
+
+            return PartialView("CarDetails", CarDetail);
+        }
 
 
-        //    List<Brand> Brands;
-        //    using (StreamReader r = new StreamReader("../json/Models.json"))
-        //    {
-        //        string json = r.ReadToEnd();
-        //        Brands = JsonConvert.DeserializeObject<List<Brand>>(json);
-        //    }
+        [ActionName("SearchView")]
+        public ActionResult RenderSearchView(SearchViewModel SearchViewModel)
+        {
 
-        //    var CarDetail = new CarDetails(currentNode)
-        //    {
-        //        Brand=Brands.First(b=>b.BrandId==int.Parse(CurrentPage.GetProperty("Brand").Value.ToString())).BrandName,
-        //        Model = Brands.First(b => b.BrandId == int.Parse(CurrentPage.GetProperty("Brand").Value.ToString())).Models.First(
-        //        m => m.ID == int.Parse(CurrentPage.GetProperty("Model").Value.ToString())).ModelName
+            var currentNode = Umbraco.TypedContent(CurrentPage.Id);
 
-        //    };
+            SearchViewModel = getSearchViewData(SearchViewModel);
 
-        //    return PartialView("CarDetails", CarDetail);
-        //}
+            var cars = currentNode.Children.AsQueryable()
+                .FilterBy("Make", SearchViewModel.Make)
+                .FilterBy("Model", SearchViewModel.Model);
+
+            var SearchResult = cars.Select(c => new SearchResultViewModel
+            {
+                Id = c.GetPropertyValue("Id"),
+                Photos = c.GetPropertyValue("Photos"),
+                Name = c.GetPropertyValue("Name"),
+                Price = c.GetPropertyValue("Price"),
+                ShortDescription = c.GetPropertyValue("ShortDescription")
+            }).ToList();
+
+
+            SearchViewModel.SearchResults = SearchResult;
+            return PartialView("CarsList", SearchViewModel);
+        }
+
+        private SearchViewModel getSearchViewData(SearchViewModel SearchViewModel)
+        {
+            var BrandModel = new BrandController().GetBrandModels(Server.MapPath("~/json/Brands.json"));
+
+            var YearsList = new List<SelectListItem>();
+
+            for (var i = 1990; i <= DateTime.Now.Year; i++)
+            {
+                YearsList.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
+            }
+
+            var Models = BrandModel.Models.Select(m => new SelectListItem() { Text = m.ModelName, Value = m.BrandName }).ToList();
+            Models.Insert(0, new SelectListItem() { Value = "", Text = "---Select---" });
+            var Makes = BrandModel.Brands.Select(m => new SelectListItem() { Text = m.BrandName, Value = m.BrandName }).ToList();
+            Makes.Insert(0, new SelectListItem() { Value = "", Text = "---Select---" });
+
+            SearchViewModel = SearchViewModel ?? new SearchViewModel();
+
+            return new SearchViewModel
+            {
+                Model = SearchViewModel.Model,
+                Make = SearchViewModel.Make,
+                Price = SearchViewModel.Price,
+                Models = Models,
+                Makes = Makes,
+                Years = YearsList
+            };
+        }
+
+        [ActionName("Search")]
+        public ActionResult Search(SearchViewModel SearchViewModel)
+        {
+            var currentNode = Umbraco.TypedContent(SearchViewModel.CurrentNodeId);
+
+            var cars = currentNode.Children.AsQueryable()
+                .FilterBy("Make", SearchViewModel.Make)
+                .FilterBy("Model", SearchViewModel.Model);
+
+            var SearchResult = cars.Select(c => new SearchResultViewModel
+            {
+                Id=c.GetPropertyValue("Id"),
+                Photos=c.GetPropertyValue("Photos"),
+                Name=c.GetPropertyValue("Name"),
+                Price=c.GetPropertyValue("Price"),
+                ShortDescription=c.GetPropertyValue("ShortDescription")
+            }).ToList();
+
+            return PartialView("_SearchResultView", SearchResult);
+        }
     }
 }

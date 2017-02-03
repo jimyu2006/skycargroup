@@ -1,14 +1,10 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
-@model MvcApplication1.Model.CarDetailsViewModel
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage<ContentModels.Page>
 @using ContentModels = Umbraco.Web.PublishedContentModels;
-
-
+@using MvcApplication1.Model;
 @{
 	Layout = "Base.cshtml";
 }
 
-<section class="cardetails">
-
-@Html.Action("RenderCarDetails","Car")
-
+<section class="cars">
+@Html.Action("Search", "Car", new SearchViewModel())
 </section>

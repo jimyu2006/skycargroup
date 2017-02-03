@@ -1,0 +1,39 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@inherits Umbraco.Web.Mvc.UmbracoViewPage<List<MvcApplication1.Model.SearchResultViewModel>>
+
+@if (Model.Any())
+{
+    var itemIndex=0;
+        foreach (var item in Model){
+        char[] splitChar = { ',' };
+        string[] ids = item.Photos.ToString().Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
+
+        string headPhotoId="";
+
+        if(ids.Length>0){
+            headPhotoId=ids[0];
+        }
+       
+        <div class="col-md-4 specs-container">
+            <article>
+                <a href="~/Car?Id=@item.Id" class="CarTitle">
+                    <img width="100%" src="@Umbraco.Media(headPhotoId).Url" />
+                </a>
+            </article>
+
+            <article>
+                <div class="spectitle"><a href="~/Car?Id=@item.Id" class="CarTitle mediumvioletred-color">@item.Name</a></div>
+            </article>
+            <article>
+                <div class="spectitle mediumvioletred-color">@string.Format("{0:C}", item.Price)</div>
+            </article>
+            <article>
+                <div class="spectitle">@item.ShortDescription</div>
+            </article>
+        </div>
+        itemIndex++;
+        if(itemIndex %3==0){              
+        <div class="clearfix hidden-sm"></div>
+    }  
+}
+}

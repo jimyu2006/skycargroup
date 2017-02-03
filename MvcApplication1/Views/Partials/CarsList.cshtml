@@ -1,41 +1,114 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
 @using ContentModels = Umbraco.Web.PublishedContentModels;
+@inherits Umbraco.Web.Mvc.UmbracoViewPage<MvcApplication1.Model.SearchViewModel>
 
-@{ 
-    var selection = CurrentPage.Children.Where("Visible");
- }
-
-@* Ensure that the Current Page has children *@
-@if (selection.Any())
-{
-    var itemIndex=0;
-<div class="container">
+<div class="container" >
     <div class="row">
-        @foreach (var item in selection){
-        char[] splitChar = { ',' };
-        string[] ids = item.Photos.ToString().Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
+        <div class="col-md-3 specs-container searchcar">
+            <h3>Find a Vehicle</h3>
+            <div class="search-condition">
+                <div>
+                    <h4>Make</h4>
+                </div>
+                <div>@Html.DropDownListFor(m=>Model.Make, Model.Makes)</div>
+                <div>
+                    <h4>Model</h4>
+                </div>
+                <div>@Html.DropDownListFor(m=>Model.Model, Model.Models)</div>
+                <div>
+                    <h4>Year</h4>
+                </div>
+                <div>@Html.DropDownListFor(m=>Model.Year, Model.Years)</div>
+                <div>
+                    <h4>Price</h4>
+                </div>
 
-        string headPhotoId="";
+                <div class="form-footer end-form">
+                    <button type="button" class="btn" name="search" id="search">Search</button>
+                </div>
 
-        if(ids.Length>0){
-            headPhotoId=ids[0];
-        }
+            </div>
+        </div>
+        <div id="searchresult" class="col-md-9 specs-container">
+            @if (Model.SearchResults.Any())
+            {
+                var itemIndex=0;
+                    foreach (var item in Model.SearchResults){
+                    char[] splitChar = { ',' };
+                    string[] ids = item.Photos.ToString().Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
 
-      <div class="col-md-4">
-          <div>
-              <img width="100%" src="@Umbraco.Media(headPhotoId).Url" />
-          </div>
-          <div><a href="~/umbraco/Surface/Car/Get/@item.Id"  class="CarTitle">@item.Name</a></div>
-          <div>@item.Price</div>
-          <div>@item.ShortDescription</div>
-          <div>@item.LongDescription</div>
-      </div>
-        itemIndex++;
-        if(itemIndex %3==0){
-        <div class="clearfix hidden-sm"></div>
-        }
-    }
+                    string headPhotoId="";
+
+                    if(ids.Length>0){
+                        headPhotoId=ids[0];
+                    }
+       
+                    <div class="col-md-4 specs-container">
+                        <article>
+                            <a href="~/Car?Id=@item.Id" class="CarTitle">
+                                <img width="100%" src="@Umbraco.Media(headPhotoId).Url" />
+                            </a>
+                        </article>
+
+                        <article>
+                            <div class="spectitle"><a href="~/Car?Id=@item.Id" class="CarTitle mediumvioletred-color">@item.Name</a></div>
+                        </article>
+                        <article>
+                            <div class="spectitle mediumvioletred-color">@string.Format("{0:C}", item.Price)</div>
+                        </article>
+                        <article>
+                            <div class="spectitle">@item.ShortDescription</div>
+                        </article>
+                    </div>
+                    itemIndex++;
+                    if(itemIndex %3==0){              
+                    <div class="clearfix hidden-sm"></div>
+                }  
+            }
+}
+
+        </div>
     </div>
 </div>
 
-}
+<script>
+    $(document).ready(function () {
+        var selectMake = $("select#Make");
+
+        var options = [];
+        selectMake.find('option').each(function () {
+            options.push({ value: $(this).val(), text: $(this).text() });
+        });
+
+        selectMake.change(function (e) {
+            var filter = $(this).val();
+            $('select#Model').val("");
+            $('select#Model>option').each(function () {
+                if ($(this).val() == filter) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        $("#search").click(function () {
+            var currentNodeId = Global.currentNodeId;
+            var make = selectMake.val();
+            var model = "";
+            var selectedModel = $('select#Model option:selected');
+            if (selectedModel.val())
+                model = selectedModel.text();
+
+            var data = {
+                CurrentNodeId: currentNodeId,
+                Make: make,
+                Model: model
+            };
+
+            $.post("/umbraco/Surface/Car/Search", data, function (result) {
+                $("#searchresult").html(result);
+            });
+        });
+    });
+</script>

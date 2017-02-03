@@ -332,9 +332,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\EmailHelper.cs" />
+    <Compile Include="Helper\PublishedContentHelper.cs" />
     <Compile Include="Model\Brand.cs" />
+    <Compile Include="Model\CarDetailsViewModel.cs" />
     <Compile Include="Model\ContactFormViewModel.cs" />
     <Compile Include="Model\ContactModel.cs" />
+    <Compile Include="Model\SearchViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -3102,6 +3105,9 @@
     <Content Include="Views\Page.cshtml" />
     <Content Include="Views\Partials\_ContactUs.cshtml" />
     <Content Include="Views\ContactUs.cshtml" />
+    <Content Include="Views\Partials\_Error.cshtml" />
+    <Content Include="Views\Partials\_SearchView.cshtml" />
+    <Content Include="Views\Partials\_SearchResultView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,66 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@inherits Umbraco.Web.Mvc.UmbracoViewPage<MvcApplication1.Model.SearchViewModel>
+
+@using (Html.BeginUmbracoForm("Search","Car", FormMethod.Post))
+{
+<h3>Find a Vehicle</h3>
+<div class="search-condition">
+    <div><h4>Make</h4></div>
+    <div>@Html.DropDownListFor(m=>Model.Make, Model.Makes)</div>
+    <div><h4>Model</h4></div>
+    <div>@Html.DropDownListFor(m=>Model.Model, Model.Models)</div>
+    <div><h4>Year</h4></div>
+    <div>@Html.DropDownListFor(m=>Model.Year, Model.Years)</div>
+    <div><h4>Price</h4></div>
+
+    <div class="form-footer end-form">
+        <button type="submit" class="btn" name="search" id="search">Search</button>
+    </div>
+</div>
+}
+
+
+<script>
+    $(document).ready(function () {
+        var selectMake = $("select#Make");
+
+        var options = [];
+        selectMake.find('option').each(function () {
+            options.push({ value: $(this).val(), text: $(this).text() });
+        });
+
+        selectMake.change(function (e) {
+            var filter = $(this).val();
+            $('select#Model>option').each(function(){
+                if ($(this).val() == filter) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        //$.post('/Umbraco/Surface/Car/Search', getSearchData())
+        //            .success(function (data) {
+        //                $("#searchresult").html(data);
+        //            });
+        
+
+        //$("#search").click(function (event) {
+        //    var contentpageId = $("input#ContentTypeId").val();
+        //    $.post('/Umbraco/Surface/Car/Search', {})
+        //        .success(function (data) {
+        //            $("#searchresult").html(data);
+        //        });
+        //});
+
+        function getSearchData() {
+            var contentTypdId=$("#ContentTypeId").val();            
+            return {
+                "ContentTypeId": contentTypdId,
+                "Make": selectMake.val(),
+                "Model": $("select#Model").val()
+            };
+        }
+    });
+</script>

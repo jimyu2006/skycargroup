@@ -29,7 +29,7 @@ namespace MvcApplication1.Controllers
             if (!ModelState.IsValid)
                 return CurrentUmbracoPage();
 
-            var sendEmailsTo = model.Email;
+            var sendEmailsTo = ConfigurationManager.AppSettings["AlertEmailTo"];
             var body = String.Format("From: {0}<br/> Email: {1}<br/> Subject: {2}<br/>  Message: {3}", model.Name, model.Email, model.Subject, model.Message);
             var subject =string.Format("Message from {0} via contact form", model.Name);
 

@@ -1,5 +1,6 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage<ContentModels.Page>
 @using ContentModels = Umbraco.Web.PublishedContentModels;
+@using MvcApplication1.Model;
 @{
 	Layout = "Base.cshtml";
 }
@@ -13,6 +14,8 @@
 
 @if(CurrentPage.IsCarSalePage){
     <section class="cars">
-        @Html.Partial("CarsList")
+    @*@Html.Partial("CarsList")*@
+    @Html.Action("SearchView", "Car", new SearchViewModel())
+    @*@Html.Action("Search", "Car", new SearchViewModel())*@
     </section>
 }

@@ -12,22 +12,26 @@ namespace MvcApplication1.Controllers
 {
     public class BrandController : SurfaceController
     {
-        [ActionName("GetBrands")]
-        public ActionResult Brands()
+        public BrandModel GetBrandModels(string DataFilePath)
         {
             List<CarBrand> Brands;
-            using (StreamReader r = new StreamReader(Server.MapPath("~/json/Brands.json")))
+            using (StreamReader r = new StreamReader(DataFilePath))
             {
                 string json = r.ReadToEnd();
-                Brands = JsonConvert.DeserializeObject<List<CarBrand>>(json).Where(b=>b.IsActive==true).ToList();
+                Brands = JsonConvert.DeserializeObject<List<CarBrand>>(json).Where(b => b.IsActive == true).ToList();
             }
             Brands.ForEach(b => b.Models.ForEach(m => m.BrandName = b.BrandName));
 
             List<CarModel> CarModels = new List<CarModel>();
             Brands.ForEach(b => CarModels.AddRange(b.Models));
 
-            return Json(new BrandModel { Brands = Brands, Models = CarModels }, JsonRequestBehavior.AllowGet);
-            //return Json(Brands, JsonRequestBehavior.AllowGet);
+            return new BrandModel { Brands = Brands, Models = CarModels };
+        }
+        [ActionName("GetBrands")]
+        public ActionResult Brands()
+        {
+            var BrandModel = GetBrandModels(Server.MapPath("~/json/Brands.json"));
+            return Json(BrandModel, JsonRequestBehavior.AllowGet);
         }
 
         [ActionName("GetModels")]
