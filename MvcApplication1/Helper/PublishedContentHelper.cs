@@ -18,6 +18,33 @@ namespace MvcApplication1.Helper
             return property.Value == null ? string.Empty : property.Value.ToString();
         }
 
+        public static IQueryable<IPublishedContent> FilterBy<T>(this IQueryable<IPublishedContent> content, string PropertyName, T MinValue, T MaxValue)
+        {
+            return content.ToList()
+                .Where(c =>
+                {
+                    var value = c.GetPropertyValue(PropertyName);
+                    if (string.IsNullOrEmpty(value))
+                        return true;
+                    if(typeof(T) == typeof(decimal))
+                    {
+                        var minValue = MinValue.ToString()=="0" ? decimal.MinValue : decimal.Parse(MinValue.ToString());
+                        var maxValue = MaxValue.ToString()=="0"? decimal.MaxValue : decimal.Parse(MaxValue.ToString());
+                        return minValue <= decimal.Parse(value) && maxValue >= decimal.Parse(value);
+                    }
+                    else
+                    {
+                        var minValue = MinValue.ToString()=="0" ? int.MinValue : int.Parse(MinValue.ToString());
+                        var maxValue = MaxValue.ToString()=="0" ? int.MaxValue : int.Parse(MaxValue.ToString());
+                        return minValue <= int.Parse(value) && maxValue >= int.Parse(value);
+                    }
+                }).AsQueryable();
+        }
+
+        public static T GetValue<T>(string value)
+        {
+            return (T)Convert.ChangeType(value, typeof(T));
+        }
 
         public static IQueryable<IPublishedContent> FilterBy(this IQueryable<IPublishedContent> content, string PropertyName, string Condition)
         {

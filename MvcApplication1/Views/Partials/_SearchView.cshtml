@@ -9,20 +9,59 @@
     <div>@Html.DropDownListFor(m=>Model.Make, Model.Makes)</div>
     <div><h4>Model</h4></div>
     <div>@Html.DropDownListFor(m=>Model.Model, Model.Models)</div>
+    <div><h4>Body Type</h4></div>
+    <div>@Html.DropDownListFor(m => Model.BodyType, Model.BodyTypes)</div>
+    <div><h4>Fuel Type</h4></div>
+    <div>@Html.DropDownListFor(m => Model.FuelType, Model.FuelTypes)</div>
+    <div><h4>Transmission</h4></div>
+    <div>@Html.DropDownListFor(m => Model.Transmission, Model.Transmissions)</div>
     <div><h4>Year</h4></div>
-    <div>@Html.DropDownListFor(m=>Model.Year, Model.Years)</div>
+    <div>
+        @Html.DropDownListFor(m=>Model.MinYear, Model.Years)
+        @Html.DropDownListFor(m => Model.MaxYear, Model.Years)
+    </div>
     <div><h4>Price</h4></div>
+    <div>
+        @Html.DropDownListFor(m => Model.MinPrice, Model.Prices)
+        @Html.DropDownListFor(m => Model.MaxPrice, Model.Prices)
+    </div>
+    <div><h4>Engine Size</h4></div>
+    <div>
+        @Html.DropDownListFor(m => Model.MinEngineSize, Model.EngineSizes)
+        @Html.DropDownListFor(m => Model.MaxEngineSize, Model.EngineSizes)
+    </div>
 
     <div class="form-footer end-form">
         <button type="submit" class="btn" name="search" id="search">Search</button>
     </div>
 </div>
 }
-
-
 <script>
     $(document).ready(function () {
-        var selectMake = $("select#Make");
+        var selectMake = $("select#Model");
+        var selectModel = $("select#Make");
+        var selectFuelType = $("select#FuelType option");
+        var selectBodyType = $("select#BodyType option");
+        var selectTransmission = $("select#Transmission option");
+        var selectMinYear = $("select#MinYear option");
+        var selectMaxYear = $("select#MaxYear option");
+        var selectMinPrice = $("select#MinPrice option");
+        var selectMaxPrice = $("select#MaxPrice option");
+        var selectMinEngineSize = $("select#MinEngineSize option");
+        var selectMaxEngineSize = $("select#MaxEngineSize option");
+
+        selectFuelType.eq(0).before($("<option></option>").val("0").text("Any Fule Type"));
+        selectBodyType.eq(0).before($("<option></option>").val("0").text("Any Body Type"));
+        selectTransmission.eq(0).before($("<option></option>").val("0").text("Any Transmission Type"));
+
+        selectMinEngineSize.eq(0).before($("<option></option>").val("0").text("Min CC"));
+        selectMaxEngineSize.eq(0).before($("<option></option>").val("0").text("Max CC"));
+
+        selectMinYear.eq(0).before($("<option></option>").val("0").text("Max Year"));
+        selectMaxYear.eq(0).before($("<option></option>").val("0").text("Max Year"));
+
+        selectMinPrice.eq(0).before($("<option></option>").val("0").text("Max Price"));
+        selectMaxPrice.eq(0).before($("<option></option>").val("0").text("Max Price"));
 
         var options = [];
         selectMake.find('option').each(function () {
@@ -59,7 +98,16 @@
             return {
                 "ContentTypeId": contentTypdId,
                 "Make": selectMake.val(),
-                "Model": $("select#Model").val()
+                "Model": $("select#Model").val(),
+                "BodyType": $("select#Model").val(),
+                "FuelType": $("select#FuelType").val(),
+                "Transmission": $("select#Transmissions").val(),
+                "MinYear": $("select#MinYear").val(),
+                "MaxYear": $("select#MaxYear").val(),
+                "MinPrice": $("select#MinPrice").val(),
+                "MaxPrice": $("select#MaxPrice").val(),
+                "MinEngineSize": $("select#MinEngineSize").val(),
+                "MaxEngineSize": $("select#MaxEngineSize").val()
             };
         }
     });

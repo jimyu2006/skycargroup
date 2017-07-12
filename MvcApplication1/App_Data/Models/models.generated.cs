@@ -19,8 +19,8 @@ using Umbraco.ModelsBuilder;
 using Umbraco.ModelsBuilder.Umbraco;
 
 [assembly: PureLiveAssembly]
-[assembly:ModelsBuilderAssembly(PureLive = true, SourceHash = "668f2dfb714823b2")]
-[assembly:System.Reflection.AssemblyVersion("0.0.0.4")]
+[assembly:ModelsBuilderAssembly(PureLive = true, SourceHash = "48c729dc7e9c43cb")]
+[assembly:System.Reflection.AssemblyVersion("0.0.0.3")]
 
 namespace Umbraco.Web.PublishedContentModels
 {
@@ -144,12 +144,12 @@ namespace Umbraco.Web.PublishedContentModels
 		}
 
 		///<summary>
-		/// Body
+		/// Body Type
 		///</summary>
-		[ImplementPropertyType("body")]
-		public string Body
+		[ImplementPropertyType("bodyType")]
+		public object BodyType
 		{
-			get { return this.GetPropertyValue<string>("body"); }
+			get { return this.GetPropertyValue("bodyType"); }
 		}
 
 		///<summary>
@@ -165,9 +165,9 @@ namespace Umbraco.Web.PublishedContentModels
 		/// Engine
 		///</summary>
 		[ImplementPropertyType("engine")]
-		public string Engine
+		public object Engine
 		{
-			get { return this.GetPropertyValue<string>("engine"); }
+			get { return this.GetPropertyValue("engine"); }
 		}
 
 		///<summary>
@@ -195,6 +195,15 @@ namespace Umbraco.Web.PublishedContentModels
 		public object Fuelsaver
 		{
 			get { return this.GetPropertyValue("fuelsaver"); }
+		}
+
+		///<summary>
+		/// FuelType
+		///</summary>
+		[ImplementPropertyType("fuelType")]
+		public object FuelType
+		{
+			get { return this.GetPropertyValue("fuelType"); }
 		}
 
 		///<summary>

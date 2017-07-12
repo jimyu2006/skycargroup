@@ -2,70 +2,109 @@
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 @inherits Umbraco.Web.Mvc.UmbracoViewPage<MvcApplication1.Model.SearchViewModel>
 
-<div class="container" >
+<div class="container">
     <div class="row">
         <div class="col-md-3 specs-container searchcar">
             <h3>Find a Vehicle</h3>
             <div class="search-condition">
-                <div>
-                    <h4>Make</h4>
+                <div class="search-row">
+                    <label>Make</label>
+                    <div>@Html.DropDownListFor(m => Model.Make, Model.Makes)</div>
                 </div>
-                <div>@Html.DropDownListFor(m=>Model.Make, Model.Makes)</div>
-                <div>
-                    <h4>Model</h4>
+                <div class="search-row">
+                    <label>Model</label>
+                    <div>@Html.DropDownListFor(m => Model.Model, Model.Models)</div>
                 </div>
-                <div>@Html.DropDownListFor(m=>Model.Model, Model.Models)</div>
-                <div>
-                    <h4>Year</h4>
+
+                <div class="search-row">
+                    <label>Body Type</label>
+                    <div>@Html.DropDownListFor(m => Model.BodyType, Model.BodyTypes)</div>
                 </div>
-                <div>@Html.DropDownListFor(m=>Model.Year, Model.Years)</div>
-                <div>
-                    <h4>Price</h4>
+
+                <div class="search-row">
+                    <label>Fuel Type</label>
+                    <div>@Html.DropDownListFor(m => Model.FuelType, Model.FuelTypes)</div>
+                </div>
+
+                <div class="search-row">
+                    <label>Transmission</label>
+                    <div>@Html.DropDownListFor(m => Model.Transmission, Model.Transmissions)</div>
+                </div>
+
+                <div class="search-row">
+                    <label>Year</label>
+                    <div class="row">
+                        <div class="col-xs-6">@Html.DropDownListFor(m => Model.MinYear, Model.Years)</div>
+                        <div class="col-xs-6">@Html.DropDownListFor(m => Model.MaxYear, Model.Years) </div>
+                    </div>
+                </div>
+                <div class="search-row">
+                    <label>Price</label>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            @Html.DropDownListFor(m => Model.MinPrice, Model.Prices)
+                        </div>
+                        <div class="col-xs-6">
+                            @Html.DropDownListFor(m => Model.MaxPrice, Model.Prices)
+                        </div>
+                    </div>
+                </div>
+                <div><label>Engine Size</label></div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        @Html.DropDownListFor(m => Model.MinEngineSize, Model.EngineSizes)
+                    </div>
+                    <div class="col-xs-6">
+                        @Html.DropDownListFor(m => Model.MaxEngineSize, Model.EngineSizes)
+                    </div>
                 </div>
 
                 <div class="form-footer end-form">
-                    <button type="button" class="btn" name="search" id="search">Search</button>
+                    <button type="button" class="btn" name="reset" id="reset">Reset</button>
+                    <button type="submit" class="btn" name="search" id="search">Search</button>
                 </div>
-
             </div>
         </div>
         <div id="searchresult" class="col-md-9 specs-container">
             @if (Model.SearchResults.Any())
-            {
-                var itemIndex=0;
-                    foreach (var item in Model.SearchResults){
-                    char[] splitChar = { ',' };
-                    string[] ids = item.Photos.ToString().Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
+                {
+                    var itemIndex = 0;
+                    foreach (var item in Model.SearchResults)
+                    {
+                        char[] splitChar = { ',' };
+                        string[] ids = item.Photos.ToString().Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
 
-                    string headPhotoId="";
+                        string headPhotoId = "";
 
-                    if(ids.Length>0){
-                        headPhotoId=ids[0];
+                        if (ids.Length > 0)
+                        {
+                            headPhotoId = ids[0];
+                        }
+
+                <div class="col-md-4 specs-container">
+                    <article>
+                        <a href="~/Car?Id=@item.Id" class="CarTitle">
+                            <img width="100%" src="@Umbraco.Media(headPhotoId).Url" />
+                        </a>
+                    </article>
+
+                    <article>
+                        <div class="spectitle"><a href="~/Car?Id=@item.Id" class="CarTitle mediumvioletred-color">@item.Name</a></div>
+                    </article>
+                    <article>
+                        <div class="spectitle mediumvioletred-color">@string.Format("{0:C}", item.Price)</div>
+                    </article>
+                    <article>
+                        <div class="spectitle">@item.ShortDescription</div>
+                    </article>
+                </div>
+                        itemIndex++;
+                        if (itemIndex % 3 == 0)
+                        {
+                <div class="clearfix hidden-sm"></div>
+                        }
                     }
-       
-                    <div class="col-md-4 specs-container">
-                        <article>
-                            <a href="~/Car?Id=@item.Id" class="CarTitle">
-                                <img width="100%" src="@Umbraco.Media(headPhotoId).Url" />
-                            </a>
-                        </article>
-
-                        <article>
-                            <div class="spectitle"><a href="~/Car?Id=@item.Id" class="CarTitle mediumvioletred-color">@item.Name</a></div>
-                        </article>
-                        <article>
-                            <div class="spectitle mediumvioletred-color">@string.Format("{0:C}", item.Price)</div>
-                        </article>
-                        <article>
-                            <div class="spectitle">@item.ShortDescription</div>
-                        </article>
-                    </div>
-                    itemIndex++;
-                    if(itemIndex %3==0){              
-                    <div class="clearfix hidden-sm"></div>
-                }  
-            }
-}
+                }
 
         </div>
     </div>
@@ -74,6 +113,24 @@
 <script>
     $(document).ready(function () {
         var selectMake = $("select#Make");
+        var selectFuelType = $("select#FuelType option");
+        var selectBodyType = $("select#BodyType option");
+        var selectTransmission = $("select#Transmission option");
+        var selectMinYear = $("select#MinYear option");
+        var selectMaxYear = $("select#MaxYear option");
+        var selectMinPrice = $("select#MinPrice option");
+        var selectMaxPrice = $("select#MaxPrice option");
+        var selectMinEngineSize = $("select#MinEngineSize option");
+        var selectMaxEngineSize = $("select#MaxEngineSize option");
+
+        selectMinEngineSize.eq(0).text("Min CC");
+        selectMaxEngineSize.eq(0).text("Max CC");
+
+        selectMinYear.eq(0).text("Min Year");
+        selectMaxYear.eq(0).text("Max Year");
+
+        selectMinPrice.eq(0).text("Min Price");
+        selectMaxPrice.eq(0).text("Max Price");
 
         var options = [];
         selectMake.find('option').each(function () {
@@ -92,6 +149,10 @@
             });
         });
 
+        $("#reset").click(function () {
+                $("select").each(function () { this.selectedIndex = 0 });
+           });
+
         $("#search").click(function () {
             var currentNodeId = Global.currentNodeId;
             var make = selectMake.val();
@@ -103,7 +164,16 @@
             var data = {
                 CurrentNodeId: currentNodeId,
                 Make: make,
-                Model: model
+                Model: model,
+                BodyType: $("select#BodyType").val(),
+                FuelType: $("select#FuelType").val(),
+                Transmission: $("select#Transmissions").val(),
+                MinYear: $("select#MinYear").val(),
+                MaxYear: $("select#MaxYear").val(),
+                MinPrice: $("select#MinPrice").val(),
+                MaxPrice: $("select#MaxPrice").val(),
+                MinEngineSize: $("select#MinEngineSize").val(),
+                MaxEngineSize: $("select#MaxEngineSize").val()
             };
 
             $.post("/umbraco/Surface/Car/Search", data, function (result) {
