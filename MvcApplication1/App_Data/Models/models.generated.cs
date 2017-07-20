@@ -19,8 +19,8 @@ using Umbraco.ModelsBuilder;
 using Umbraco.ModelsBuilder.Umbraco;
 
 [assembly: PureLiveAssembly]
-[assembly:ModelsBuilderAssembly(PureLive = true, SourceHash = "48c729dc7e9c43cb")]
-[assembly:System.Reflection.AssemblyVersion("0.0.0.3")]
+[assembly:ModelsBuilderAssembly(PureLive = true, SourceHash = "cfbbe38442949510")]
+[assembly:System.Reflection.AssemblyVersion("0.0.0.2")]
 
 namespace Umbraco.Web.PublishedContentModels
 {
@@ -228,9 +228,9 @@ namespace Umbraco.Web.PublishedContentModels
 		/// Odometer
 		///</summary>
 		[ImplementPropertyType("odometer")]
-		public string Odometer
+		public int Odometer
 		{
-			get { return this.GetPropertyValue<string>("odometer"); }
+			get { return this.GetPropertyValue<int>("odometer"); }
 		}
 
 		///<summary>
@@ -258,6 +258,15 @@ namespace Umbraco.Web.PublishedContentModels
 		public string ShortDescription
 		{
 			get { return this.GetPropertyValue<string>("shortDescription"); }
+		}
+
+		///<summary>
+		/// Title
+		///</summary>
+		[ImplementPropertyType("title")]
+		public string Title
+		{
+			get { return this.GetPropertyValue<string>("title"); }
 		}
 
 		///<summary>

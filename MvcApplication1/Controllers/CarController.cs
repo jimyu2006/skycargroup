@@ -42,11 +42,13 @@ namespace MvcApplication1.Controllers
 
             var CarDetail = new CarDetailsViewModel(currentNode, CultureInfo.CurrentCulture)
             {
+                Title= currentNode.GetPropertyValue("Title"),
                 Brand = currentNode.GetPropertyValue("BrandName"),
                 Model = currentNode.GetPropertyValue("ModelName"),
                 Year = int.Parse(currentNode.GetPropertyValue("Year")),
                 Price = int.Parse(currentNode.GetPropertyValue("Price")),
-                ShortDescription = currentNode.GetPropertyValue("LongDescription"),
+                ShortDescription = currentNode.GetPropertyValue("ShortDescription"),
+                LongDescription= currentNode.GetPropertyValue("LongDescription"),
                 Photos = currentNode.GetPropertyValue("Photos").Split(new char[] { ',' }),
                 Engine = currentNode.GetPropertyValue("Engine"),
                 Body = currentNode.GetPropertyValue("Body"),
@@ -92,38 +94,25 @@ namespace MvcApplication1.Controllers
 
             SearchViewModel = getSearchViewData(SearchViewModel);
 
-            var cars = currentNode.Children.AsQueryable()
-                .FilterBy("Make", SearchViewModel.Make)
-                .FilterBy("Model", SearchViewModel.Model)
-                .FilterBy("BodyType", SearchViewModel.BodyType)
-                .FilterBy("FuelType", SearchViewModel.FuelType)
-                .FilterBy("Transmission", SearchViewModel.Transmission)
-                .FilterBy("Year", SearchViewModel.MinYear, SearchViewModel.MaxYear)
-                .FilterBy("Price", SearchViewModel.MinPrice, SearchViewModel.MaxPrice)
-                .FilterBy("Year", SearchViewModel.MinEngineSize, SearchViewModel.MaxEngineSize)
-                .FilterBy("Year", SearchViewModel.MinYear, SearchViewModel.MaxYear);
-
-            var SearchResult = cars.Select(c => new SearchResultViewModel
-            {
-                Id = c.GetPropertyValue("Id"),
-                Photos = c.GetPropertyValue("Photos"),
-                Name = c.GetPropertyValue("Name"),
-                Price = c.GetPropertyValue("Price"),
-                ShortDescription = c.GetPropertyValue("ShortDescription")
-            }).ToList();
-
-
-            SearchViewModel.SearchResults = SearchResult;
+            SearchViewModel.SearchResults = getSearchViewResult(currentNode, SearchViewModel);
             return PartialView("CarsList", SearchViewModel);
+        }
+
+        [ActionName("Search")]
+        public ActionResult Search(SearchViewModel SearchViewModel)
+        {
+            var currentNode = Umbraco.TypedContent(SearchViewModel.CurrentNodeId);
+            var SearchResult = getSearchViewResult(currentNode, SearchViewModel);
+            return PartialView("_SearchResultView", SearchResult);
         }
 
         private SearchViewModel getSearchViewData(SearchViewModel SearchViewModel)
         {
             var BrandModel = new BrandController().GetBrandModels(Server.MapPath("~/json/Brands.json"));
 
-            var YearsList = new List<SelectListItem>() ;
+            var YearsList = new List<SelectListItem>();
 
-            YearsList.Add(new SelectListItem() { Value ="", Text="--" });
+            YearsList.Add(new SelectListItem() { Value = "", Text = "--" });
             for (var i = 1998; i <= DateTime.Now.Year; i++)
             {
                 YearsList.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
@@ -136,12 +125,12 @@ namespace MvcApplication1.Controllers
 
             var OdoMeters = new List<SelectListItem>();
             OdoMeters.Add(new SelectListItem() { Value = "", Text = "--" });
-            for (var i = 10000; i <= 200000; i+=10000)
+            for (var i = 10000; i <= 200000; i += 10000)
             {
                 OdoMeters.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
             }
 
-            var EngineSizes=new List<SelectListItem>() {
+            var EngineSizes = new List<SelectListItem>() {
                 new SelectListItem() { Value = "", Text="--"},
                 new SelectListItem() { Value = "1200", Text="1200"},
                 new SelectListItem() { Value = "1300", Text="1300"},
@@ -162,8 +151,6 @@ namespace MvcApplication1.Controllers
                 new SelectListItem() { Value = "COUPLE", Text="COUPLE"},
                 new SelectListItem() { Value = "HATCHBACK", Text="HATCHBACK"},
                 new SelectListItem() { Value = "PEOPLE MOVERS", Text="PEOPLE MOVERS"},
-                new SelectListItem() { Value = "RV/SUV", Text="RV/SUV"},
-                new SelectListItem() { Value = "RV-SUV", Text="RV-SUV"},
                 new SelectListItem() { Value = "RV/SUV", Text="RV/SUV"},
                 new SelectListItem() { Value = "SEDAN", Text="SEDAN"},
                 new SelectListItem() { Value = "STATION WAGON", Text="STATION WAGON"},
@@ -187,18 +174,16 @@ namespace MvcApplication1.Controllers
                 new SelectListItem() { Value = "Hybrid", Text="Hybrid"}
             };
 
-            var MinPrices = new List<SelectListItem>();
-            MinPrices.Add(new SelectListItem() { Value = "", Text = "--" });
+            var Prices = new List<SelectListItem>();
+            Prices.Add(new SelectListItem() { Value = "", Text = "--" });
             for (var i = 2000; i <= 50000; i += 1000)
             {
-                MinPrices.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
+                Prices.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
             }
 
-            var MaxPrices = new List<SelectListItem>();
-            MaxPrices.Add(new SelectListItem() { Value ="", Text ="--" });
             for (var i = 50000; i <= 200000; i += 10000)
             {
-                MaxPrices.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
+                Prices.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
             }
 
 
@@ -209,54 +194,52 @@ namespace MvcApplication1.Controllers
                 Model = SearchViewModel.Model,
                 Make = SearchViewModel.Make,
                 MinPrice = SearchViewModel.MinPrice,
-                MaxPrice=SearchViewModel.MaxPrice,
-                Transmission=SearchViewModel.Transmission,
-                BodyType=SearchViewModel.BodyType,
-                FuelType=SearchViewModel.FuelType,
-                MinOdometer=SearchViewModel.MinOdometer,
-                MaxOdometer=SearchViewModel.MaxOdometer,
-                MinYear=SearchViewModel.MinYear,
-                MaxYear=SearchViewModel.MaxYear,
-                MinEngineSize=SearchViewModel.MinEngineSize,
-                MaxEngineSize=SearchViewModel.MaxEngineSize,
+                MaxPrice = SearchViewModel.MaxPrice,
+                Transmission = SearchViewModel.Transmission,
+                BodyType = SearchViewModel.BodyType,
+                FuelType = SearchViewModel.FuelType,
+                MinOdometer = SearchViewModel.MinOdometer,
+                MaxOdometer = SearchViewModel.MaxOdometer,
+                MinYear = SearchViewModel.MinYear,
+                MaxYear = SearchViewModel.MaxYear,
+                MinEngineSize = SearchViewModel.MinEngineSize,
+                MaxEngineSize = SearchViewModel.MaxEngineSize,
 
                 Models = Models,
                 Makes = Makes,
                 Years = YearsList,
-                BodyTypes=BodyTypes,
-                FuelTypes=FuelTypes,
-                Transmissions=Transmissions,
-                EngineSizes=EngineSizes,
-                Prices=MinPrices
+                BodyTypes = BodyTypes,
+                FuelTypes = FuelTypes,
+                Transmissions = Transmissions,
+                EngineSizes = EngineSizes,
+                Prices = Prices,
+                Odometers = OdoMeters
             };
         }
-
-        [ActionName("Search")]
-        public ActionResult Search(SearchViewModel SearchViewModel)
+        private List<SearchResultViewModel>  getSearchViewResult(IPublishedContent currentNode, SearchViewModel searchViewModel)
         {
-            var currentNode = Umbraco.TypedContent(SearchViewModel.CurrentNodeId);
-
             var cars = currentNode.Children.AsQueryable()
-                .FilterBy("Make", SearchViewModel.Make)
-                .FilterBy("Model", SearchViewModel.Model)
-                .FilterBy("BodyType", SearchViewModel.BodyType)
-                .FilterBy("FuelType", SearchViewModel.FuelType)
-                .FilterBy("Transmission", SearchViewModel.Transmission)
-                .FilterBy("Year", SearchViewModel.MinYear, SearchViewModel.MaxYear)
-                .FilterBy("Price", SearchViewModel.MinPrice, SearchViewModel.MaxPrice)
-                .FilterBy("Year", SearchViewModel.MinEngineSize, SearchViewModel.MaxEngineSize)
-                .FilterBy("Year", SearchViewModel.MinYear, SearchViewModel.MaxYear);
+                .FilterBy("Make", searchViewModel.Make)
+                .FilterBy("Model", searchViewModel.Model)
+                .FilterBy("BodyType", searchViewModel.BodyType)
+                .FilterBy("FuelType", searchViewModel.FuelType)
+                .FilterBy("Transmission", searchViewModel.Transmission)
+                .FilterBy("Year", searchViewModel.MinYear, searchViewModel.MaxYear)
+                .FilterBy("Price", searchViewModel.MinPrice, searchViewModel.MaxPrice)
+                .FilterBy("Engine", searchViewModel.MinEngineSize, searchViewModel.MaxEngineSize)
+                .FilterBy("Odometer", searchViewModel.MinOdometer, searchViewModel.MaxOdometer);
 
             var SearchResult = cars.Select(c => new SearchResultViewModel
             {
-                Id=c.GetPropertyValue("Id"),
-                Photos=c.GetPropertyValue("Photos"),
-                Name=c.GetPropertyValue("Name"),
-                Price=c.GetPropertyValue("Price"),
-                ShortDescription=c.GetPropertyValue("ShortDescription")
+                Id = c.Id.ToString(),
+                Photos = c.GetPropertyValue("Photos"),
+                Title = c.GetPropertyValue("Title"),
+                Price =decimal.Parse(c.GetPropertyValue("Price")),
+                ShortDescription = c.GetPropertyValue("ShortDescription")
             }).ToList();
 
-            return PartialView("_SearchResultView", SearchResult);
+            return SearchResult;
+
         }
     }
 }

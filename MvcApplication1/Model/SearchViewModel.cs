@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Web;
@@ -43,9 +44,10 @@ namespace MvcApplication1.Model
     {
         public string Id { get; set; }
 
-        public string Name { get; set; }
+        public string Title { get; set; }
 
-        public string Price { get; set; }
+        [DisplayFormat(DataFormatString = "{0:c}")]
+        public decimal Price { get; set; }
 
         public string Photos { get; set; }
 

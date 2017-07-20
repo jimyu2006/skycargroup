@@ -38,6 +38,24 @@
                         <div class="col-xs-6">@Html.DropDownListFor(m => Model.MaxYear, Model.Years) </div>
                     </div>
                 </div>
+                <div><label>Engine Size</label></div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        @Html.DropDownListFor(m => Model.MinEngineSize, Model.EngineSizes)
+                    </div>
+                    <div class="col-xs-6">
+                        @Html.DropDownListFor(m => Model.MaxEngineSize, Model.EngineSizes)
+                    </div>
+                </div>
+                <div><label>Mileage/Odometer</label></div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        @Html.DropDownListFor(m => Model.MinOdometer, Model.Odometers)
+                    </div>
+                    <div class="col-xs-6">
+                        @Html.DropDownListFor(m => Model.MaxOdometer, Model.Odometers)
+                    </div>
+                </div>
                 <div class="search-row">
                     <label>Price</label>
                     <div class="row">
@@ -49,15 +67,7 @@
                         </div>
                     </div>
                 </div>
-                <div><label>Engine Size</label></div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        @Html.DropDownListFor(m => Model.MinEngineSize, Model.EngineSizes)
-                    </div>
-                    <div class="col-xs-6">
-                        @Html.DropDownListFor(m => Model.MaxEngineSize, Model.EngineSizes)
-                    </div>
-                </div>
+
 
                 <div class="form-footer end-form">
                     <button type="button" class="btn" name="reset" id="reset">Reset</button>
@@ -89,7 +99,7 @@
                     </article>
 
                     <article>
-                        <div class="spectitle"><a href="~/Car?Id=@item.Id" class="CarTitle mediumvioletred-color">@item.Name</a></div>
+                        <div class="spectitle"><a href="~/Car?Id=@item.Id" class="CarTitle mediumvioletred-color">@item.Title</a></div>
                     </article>
                     <article>
                         <div class="spectitle mediumvioletred-color">@string.Format("{0:C}", item.Price)</div>
@@ -101,7 +111,7 @@
                         itemIndex++;
                         if (itemIndex % 3 == 0)
                         {
-                <div class="clearfix hidden-sm"></div>
+                            <div class="clearfix hidden-sm"></div>
                         }
                     }
                 }
@@ -122,6 +132,8 @@
         var selectMaxPrice = $("select#MaxPrice option");
         var selectMinEngineSize = $("select#MinEngineSize option");
         var selectMaxEngineSize = $("select#MaxEngineSize option");
+        var selectMinOdometer = $("select#MinOdometer option");
+        var selectMaxOdometer = $("select#MaxOdometer option");
 
         selectMinEngineSize.eq(0).text("Min CC");
         selectMaxEngineSize.eq(0).text("Max CC");
@@ -131,6 +143,9 @@
 
         selectMinPrice.eq(0).text("Min Price");
         selectMaxPrice.eq(0).text("Max Price");
+
+        selectMinOdometer.eq(0).text("Min Odometer");
+        selectMaxOdometer.eq(0).text("Max Odometer");
 
         var options = [];
         selectMake.find('option').each(function () {
@@ -167,13 +182,15 @@
                 Model: model,
                 BodyType: $("select#BodyType").val(),
                 FuelType: $("select#FuelType").val(),
-                Transmission: $("select#Transmissions").val(),
+                Transmission: $("select#Transmission").val(),
                 MinYear: $("select#MinYear").val(),
                 MaxYear: $("select#MaxYear").val(),
                 MinPrice: $("select#MinPrice").val(),
                 MaxPrice: $("select#MaxPrice").val(),
                 MinEngineSize: $("select#MinEngineSize").val(),
-                MaxEngineSize: $("select#MaxEngineSize").val()
+                MaxEngineSize: $("select#MaxEngineSize").val(),
+                MinOdometer: $("select#MinOdometer").val(),
+                MaxOdometer: $("select#MaxOdometer").val()
             };
 
             $.post("/umbraco/Surface/Car/Search", data, function (result) {

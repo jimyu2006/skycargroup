@@ -2,9 +2,17 @@
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 @using MvcApplication1.Model;
 @{
-	Layout = "Base.cshtml";
-}
+    Layout = "Base.cshtml";
+    var Id = HttpContext.Current.Request["Id"];
 
-<section class="cars">
-@Html.Action("Search", "Car", new SearchViewModel())
-</section>
+    if (Id != null)
+    {
+        <section class="cardetails">
+            @Html.Action("Get", "Car", new { Id = int.Parse(Id) });
+        </section>
+    }
+    else
+    {
+        @Html.Partial("_Error")
+    }
+}
